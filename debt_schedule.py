@@ -15,6 +15,7 @@ capex_percent_revenue = 0.03
 nwc_percent_revenue = 0.01
 initial_debt = 1000
 interest_rate = 0.08    
+holding_period = 5
 
 #Debt Schedule
 beginning_debt = initial_debt
@@ -53,7 +54,7 @@ for year in range(1, holding_period + 1):
     # Next year beginning debt
     beginning_debt = ending_debt
  
- print("Debt Schedule")
+print("Debt Schedule")
 
 print(
     f"{'Year':<8}"
