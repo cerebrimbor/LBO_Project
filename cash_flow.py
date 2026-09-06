@@ -10,7 +10,7 @@ revenues = [1000,1080,1166.4,1259.712,1360.48896,1469.3280768]
 ebitdas = [200,216,233.28,251.9424,272.097792,293.86561536]
 
 #Cash flow assumptions
-tax_rate = 0.25 #current tax rate is between 10 to 37 percent for usa
+tax_rate = 0.25 
 capex_percent_revenue = 0.03
 nwc_percent_revenue = 0.01
 initial_debt = 1000
