@@ -53,3 +53,24 @@ for year in range(1, holding_period + 1):
     # Next year beginning debt
     beginning_debt = ending_debt
  
+ print("Debt Schedule")
+
+print(
+    f"{'Year':<8}"
+    f"{'Beginning Debt':>20}"
+    f"{'Interest':>15}"
+    f"{'FCF':>15}"
+    f"{'Debt Repayment':>20}"
+    f"{'Ending Debt':>18}"
+)
+
+for row in debt_schedule:
+
+    print(
+        f"Y{row['year']:<7}"
+        f"{format_money(row['beginning_debt']):>20}"
+        f"{format_money(row['interest']):>15}"
+        f"{format_money(row['free_cash_flow']):>15}"
+        f"{format_money(row['debt_repayment']):>20}"
+        f"{format_money(row['ending_debt']):>18}"
+    )
