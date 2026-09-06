@@ -54,3 +54,25 @@ print(
     f"{'ΔNWC':>15}"
     f"{'FCF':>15}"
 )
+
+for year in range(1, 6):
+
+    revenue = revenues[year]
+    ebitda = ebitdas[year]
+
+    interest = initial_debt * interest_rate
+    taxes = (ebitda - interest) * tax_rate
+    capex = revenue * capex_percent_revenue
+    change_nwc = revenue * nwc_percent_revenue
+
+    fcf = free_cash_flows[year - 1]
+
+    print(
+        f"Y{year:<7}"
+        f"{format_money(ebitda):>15}"
+        f"{format_money(interest):>15}"
+        f"{format_money(taxes):>15}"
+        f"{format_money(capex):>15}"
+        f"{format_money(change_nwc):>15}"
+        f"{format_money(fcf):>15}"
+    )
