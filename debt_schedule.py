@@ -3,7 +3,7 @@ from operating_forecast import revenues, ebitdas
 from sources_uses import new_debt
 
 #Debt Schedule
-beginning_debt = initial_debt
+beginning_debt = new_debt
 debt_schedule = []
 
 for year in range(1, holding_period + 1):
