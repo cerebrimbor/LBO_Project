@@ -1,16 +1,18 @@
-from assumptions import (revenue,ebitda,holding_period,revenue_growth,ebitda_margin)
+from assumptions import revenue, ebitda
+from regime_engine import economic_path
 
 # Operating Forecast
 
 revenues = [revenue]
 ebitdas = [ebitda]
 
-for year in range(1, holding_period + 1):
+for year in economic_path:
 
-    # Revenue growth
-    next_revenue = revenues[-1] * (1 + revenue_growth)
+    growth = year["revenue_growth"]
+    margin = year["ebitda_margin"]
+
+    next_revenue = revenues[-1] * (1 + growth)
+    next_ebitda = next_revenue * margin
+
     revenues.append(next_revenue)
-
-    # EBITDA calculation
-    next_ebitda = next_revenue * ebitda_margin
     ebitdas.append(next_ebitda)
