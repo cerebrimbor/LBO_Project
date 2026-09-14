@@ -1,45 +1,43 @@
 from assumptions import (tax_rate,capex_percent_revenue,nwc_percent_revenue)
-from operating_forecast import revenues, ebitdas
 from sources_uses import new_debt
-from regime_engine import economic_path
 
-#Debt Schedule
-beginning_debt = new_debt
-debt_schedule = []
+def simulate_debt_schedule(economic_path, revenues, ebitdas):
+    beginning_debt = new_debt
+    debt_schedule = []
 
-for year in economic_path:
+    for year in economic_path:
+        year_number = year["year"]
+        interest_rate = year["interest_rate"]
 
-    year_number = year["year"]
-    interest_rate = year["interest_rate"]
-    revenue = revenues[year_number]
-    ebitda = ebitdas[year_number]
-    
-    interest = beginning_debt * interest_rate
+        revenue = revenues[year_number]
+        ebitda = ebitdas[year_number]
 
-    taxable_income = ebitda - interest
-    taxes = taxable_income * tax_rate
+        interest = beginning_debt * interest_rate
 
-    capex = revenue * capex_percent_revenue
+        taxable_income = ebitda - interest
+        taxes = taxable_income * tax_rate
 
-    change_nwc = revenue * nwc_percent_revenue
+        capex = revenue * capex_percent_revenue
 
-    free_cash_flow = (ebitda- interest- taxes- capex- change_nwc)
+        change_nwc = revenue * nwc_percent_revenue
 
-    debt_repayment = min(free_cash_flow, beginning_debt)
+        free_cash_flow = (ebitda - interest - taxes - capex - change_nwc)
 
-    ending_debt = beginning_debt - debt_repayment
+        debt_repayment = min(free_cash_flow,beginning_debt)
 
-    # Store results
-    debt_schedule.append({
-        "year": year_number,
-        "interest_rate": interest_rate,
-        "beginning_debt": beginning_debt,
-        "interest": interest,
-        "free_cash_flow": free_cash_flow,
-        "debt_repayment": debt_repayment,
-        "ending_debt": ending_debt
-    })
+        ending_debt = beginning_debt - debt_repayment
 
-    # Next year beginning debt
-    beginning_debt = ending_debt
- 
+        debt_schedule.append({
+            "year": year_number,
+            "regime": year["regime"],
+            "interest_rate": interest_rate,
+            "beginning_debt": beginning_debt,
+            "interest": interest,
+            "free_cash_flow": free_cash_flow,
+            "debt_repayment": debt_repayment,
+            "ending_debt": ending_debt
+        })
+
+        beginning_debt = ending_debt
+
+    return debt_schedule
