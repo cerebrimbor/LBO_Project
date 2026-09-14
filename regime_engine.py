@@ -48,12 +48,14 @@ def next_regime(current_regime):
 def get_regime_parameters(regime):
     return regime_parameters[regime]
 
-#Adding economic path 
-current_regime = "Normal"
-economic_path = []
-for year in range(1, 6):
-    parameters = get_regime_parameters(current_regime)
-    economic_path.append({
+def simulate_economic_path(years, starting_regime="Normal"):
+    current_regime = starting_regime
+    economic_path = []
+
+    for year in range(1, years + 1):
+        parameters = get_regime_parameters(current_regime)
+        
+        economic_path.append({
             "year": year,
             "regime": current_regime,
             "revenue_growth": parameters["revenue_growth"],
@@ -61,12 +63,15 @@ for year in range(1, 6):
             "interest_rate": parameters["interest_rate"],
             "valuation_multiple": parameters["valuation_multiple"]
         })
-    current_regime = next_regime(current_regime)
-    
+
+        current_regime = next_regime(current_regime)
+
+    return economic_path
+
+economic_path = simulate_economic_path(5)
+
 print("ECONOMIC PATH")
-
 for year in economic_path:
-
     print(
         f"Y{year['year']}: "
         f"{year['regime']:<10} "

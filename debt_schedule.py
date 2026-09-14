@@ -1,15 +1,18 @@
-from assumptions import (holding_period,interest_rate,tax_rate,capex_percent_revenue,nwc_percent_revenue)
+from assumptions import (tax_rate,capex_percent_revenue,nwc_percent_revenue)
 from operating_forecast import revenues, ebitdas
 from sources_uses import new_debt
+from regime_engine import economic_path
 
 #Debt Schedule
 beginning_debt = new_debt
 debt_schedule = []
 
-for year in range(1, holding_period + 1):
+for year in economic_path:
 
-    revenue = revenues[year]
-    ebitda = ebitdas[year]
+    year_number = year["year"]
+    interest_rate = year["interest_rate"]
+    revenue = revenues[year_number]
+    ebitda = ebitdas[year_number]
     
     interest = beginning_debt * interest_rate
 
@@ -28,7 +31,8 @@ for year in range(1, holding_period + 1):
 
     # Store results
     debt_schedule.append({
-        "year": year,
+        "year": year_number,
+        "interest_rate": interest_rate,
         "beginning_debt": beginning_debt,
         "interest": interest,
         "free_cash_flow": free_cash_flow,
