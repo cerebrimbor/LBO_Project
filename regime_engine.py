@@ -67,16 +67,3 @@ def simulate_economic_path(years, starting_regime="Normal"):
         current_regime = next_regime(current_regime)
 
     return economic_path
-
-economic_path = simulate_economic_path(5)
-
-print("ECONOMIC PATH")
-for year in economic_path:
-    print(
-        f"Y{year['year']}: "
-        f"{year['regime']:<10} "
-        f"Growth={year['revenue_growth']:.1%} "
-        f"Margin={year['ebitda_margin']:.1%} "
-        f"Rate={year['interest_rate']:.1%} "
-        f"Multiple={year['valuation_multiple']}x"
-    )
