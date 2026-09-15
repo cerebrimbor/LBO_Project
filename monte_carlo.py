@@ -1,23 +1,30 @@
+import numpy as np
+
 from main import simulate_lbo
 
 
 # Monte Carlo settings
-mc_sims = 1000
+mc_sims = 100000
+seed = 42
 
 
-def run_monte_carlo(simulation_count=mc_sims):
+def run_monte_carlo(
+    simulation_count=mc_sims,
+    seed=seed
+):
 
-    # Store complete simulation results
+    rng = np.random.default_rng(seed)
+
     all_results = []
 
-    # Run simulations
     for _ in range(simulation_count):
 
-        result = simulate_lbo()
+        result = simulate_lbo(
+            rng=rng
+        )
 
         all_results.append(result)
 
-    # Extract MOIC and IRR
     moic_results = [
         result["moic"]
         for result in all_results
@@ -28,17 +35,14 @@ def run_monte_carlo(simulation_count=mc_sims):
         for result in all_results
     ]
 
-    # Count distressed cases
     distressed_count = sum(
         result["distressed"]
         for result in all_results
     )
 
-    # Sort results
     sorted_moics = sorted(moic_results)
     sorted_irrs = sorted(irr_results)
 
-    # Average
     average_moic = (
         sum(moic_results)
         / len(moic_results)
@@ -49,7 +53,6 @@ def run_monte_carlo(simulation_count=mc_sims):
         / len(irr_results)
     )
 
-    # Percentile function
     def percentile(values, percentile):
 
         index = int(
@@ -59,21 +62,18 @@ def run_monte_carlo(simulation_count=mc_sims):
 
         return values[index]
 
-    # MOIC percentiles
     moic_p5 = percentile(sorted_moics, 5)
     moic_p25 = percentile(sorted_moics, 25)
     moic_p50 = percentile(sorted_moics, 50)
     moic_p75 = percentile(sorted_moics, 75)
     moic_p95 = percentile(sorted_moics, 95)
 
-    # IRR percentiles
     irr_p5 = percentile(sorted_irrs, 5)
     irr_p25 = percentile(sorted_irrs, 25)
     irr_p50 = percentile(sorted_irrs, 50)
     irr_p75 = percentile(sorted_irrs, 75)
     irr_p95 = percentile(sorted_irrs, 95)
 
-    # Downside probabilities
     moic_below_1 = sum(
         moic < 1.0
         for moic in moic_results
@@ -90,6 +90,8 @@ def run_monte_carlo(simulation_count=mc_sims):
     )
 
     return {
+        "seed": seed,
+
         "all_results": all_results,
 
         "moic_results": moic_results,
@@ -113,12 +115,10 @@ def run_monte_carlo(simulation_count=mc_sims):
 
         "moic_below_1": moic_below_1,
         "irr_below_10": irr_below_10,
-        "distress_probability": distress_probability
+        "distress_probability":
+            distress_probability
     }
 
-
-# Only print results when this file
-# is run directly.
 
 if __name__ == "__main__":
 
@@ -130,6 +130,11 @@ if __name__ == "__main__":
     print(
         f"Simulations: "
         f"{len(results['all_results'])}"
+    )
+
+    print(
+        f"Seed: "
+        f"{results['seed']}"
     )
 
     print("\nMOIC")

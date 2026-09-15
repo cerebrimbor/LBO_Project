@@ -1,3 +1,5 @@
+import numpy as np
+
 from regime_engine import simulate_economic_path
 from sources_uses import sponsor_equity
 from operating_forecast import simulate_operating_forecast
@@ -5,26 +7,31 @@ from debt_schedule import simulate_debt_schedule
 from assumptions import holding_period
 
 
-def simulate_lbo():
+def simulate_lbo(seed=None, rng=None):
 
-    #Economic path
+    # Create one RNG for the entire simulation
+    if rng is None:
+        rng = np.random.default_rng(seed)
+
+    # 1. Economic path
     economic_path = simulate_economic_path(
-        holding_period
+        holding_period,
+        rng=rng
     )
 
-    #Operating forecast
+    # 2. Operating forecast
     revenues, ebitdas = simulate_operating_forecast(
         economic_path
     )
 
-    #Debt schedule
+    # 3. Debt schedule
     debt_schedule = simulate_debt_schedule(
         economic_path,
         revenues,
         ebitdas
     )
 
-    #Exit valuation
+    # 4. Exit valuation
     final_ebitda = ebitdas[-1]
     final_debt = debt_schedule[-1]["ending_debt"]
 
@@ -38,7 +45,7 @@ def simulate_lbo():
         exit_enterprise_value - final_debt
     )
 
-    #Loss handling
+    # 5. Distress / loss handling
     if raw_exit_equity <= 0:
 
         exit_equity = 0
@@ -50,7 +57,6 @@ def simulate_lbo():
         exit_equity = raw_exit_equity
         distressed = False
 
-        # Calculate MOIC before assigning status
         moic = exit_equity / sponsor_equity
 
         if moic < 1.0:
@@ -58,7 +64,7 @@ def simulate_lbo():
         else:
             status = "PROFITABLE"
 
-    #Returns
+    # 6. Returns
     moic = exit_equity / sponsor_equity
 
     if moic <= 0:
@@ -66,7 +72,6 @@ def simulate_lbo():
     else:
         irr = moic ** (1 / holding_period) - 1
 
-    #Return results
     return {
         "economic_path": economic_path,
         "revenues": revenues,
@@ -80,9 +85,10 @@ def simulate_lbo():
         "irr": irr
     }
 
+
 if __name__ == "__main__":
 
-    result = simulate_lbo()
+    result = simulate_lbo(seed=42)
 
     print("ECONOMIC PATH")
 
