@@ -88,7 +88,7 @@ def simulate_lbo(seed=None, rng=None):
 
 if __name__ == "__main__":
 
-    result = simulate_lbo(seed=42)
+    result = simulate_lbo()
 
     print("ECONOMIC PATH")
 
