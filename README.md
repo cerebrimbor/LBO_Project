@@ -41,3 +41,5 @@ Markov Economic Regimes
 ```bash
 pip install numpy matplotlib
 python main.py
+python monte_carlo.py
+python visualizations.py
